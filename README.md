@@ -3,6 +3,17 @@
 - The agent learns and recognizes a vocabulary of 20 words. It is shown in video at https://youtu.be/KGUrMSvD4RI
 - The agent learns and recognizes a vocabulary of 1200 words. It is shown in video at https://youtu.be/kjhJ7Q-7Ys0
 
+I am looking for a definition of a mathematical machine for learning. 
+The Mental Processing Unit (MPU) is a computational mental organ introduced 
+in detail in the manuscript called "Samu in His Prenatal Development". This 
+is a possible definition that is based on the Samu's COP-based Q-learning 
+(see http://arxiv.org/abs/1511.02889) and on the well-known basic processes 
+in infant development called habituation and sensitization. I have performed 
+several experiments for creating the definition of MPUs. The SamuVocal in 
+question is a strong simplification of the SamuBrain 
+(see https://github.com/nbatfai/SamuBrain) because the MPU of SamuVocal uses 
+only a vector of Samu's COP-based Q-learning instead of a matrix.
+
 ## Usage
 
 ```
