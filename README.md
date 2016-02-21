@@ -1,5 +1,7 @@
 # SamuVocab, exp. 7, cognitive mental organs: MPU (Mental Processing Unit), acquiring higher-order knowledge
-The agent learns and recognizes a vocabulary of 20 words. It is shown in video at https://youtu.be/KGUrMSvD4RI
+
+- The agent learns and recognizes a vocabulary of 20 words. It is shown in video at https://youtu.be/KGUrMSvD4RI
+- The agent learns and recognizes a vocabulary of 1200 words. 
 
 ## Usage
 
@@ -32,9 +34,12 @@ tail -f out|grep "WORD"
 ### Samu (Nahshon) has learned a vocabulary of 20 words
 
 Samu has learned the words of the paper 'Baby’s First 10 Words' (see Table 4 in http://waldron.stanford.edu/~babylab/pdfs/Tardifetal2008.pdf)
-The resulting can be found at https://youtu.be/KGUrMSvD4RI
+This version is tagged by 'v20words'. The resulting can be found at https://youtu.be/KGUrMSvD4RI
 
-###
+### Samu (Nahshon) is learning words from Sitton's list of 1200 words
+
+Rebecca Sitton's word list of 1200 high frequency words is used in GameOfLife.cpp.
+This version is tagged by 'v1200words'. The resulting can be found at https://youtu.be/kjhJ7Q-7Ys0
 
 ## Previous other experiments
 
