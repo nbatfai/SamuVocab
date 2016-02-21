@@ -23,10 +23,18 @@ tail -f out|grep SENSITIZATION
 tail -f out|grep "HABITUATION MONITOR" 
 ```
 
-
+```
+tail -f out|grep "WORD" 
+```
 
 ## Experiments with this project
 
+### Samu (Nahshon) has learned a vocabulary of 20 words
+
+Samu has learned the words of the paper 'Baby’s First 10 Words' (see Table 4 in http://waldron.stanford.edu/~babylab/pdfs/Tardifetal2008.pdf)
+The resulting can be found at https://youtu.be/KGUrMSvD4RI
+
+###
 
 ## Previous other experiments
 
