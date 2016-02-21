@@ -102,7 +102,9 @@ void ticker(int **lattice, std::string &);
     
     
 public:
-    GameOfLife ( int w = 30, int h = 20 );
+ int xx{34};
+  
+  GameOfLife ( int w = 30, int h = 20 );
     ~GameOfLife();
 
     void run();

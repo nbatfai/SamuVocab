@@ -329,7 +329,7 @@ void GameOfLife::control_Stroop ( int **nextLattice )
 
 void GameOfLife::ticker ( int **lattice, std::string & hello )
 {
-  static int xx = 34;//hello.length();
+  //static int xx = 34;//hello.length();
 
   int l = hello.length();
 
@@ -1594,8 +1594,11 @@ void GameOfLife::development()
   clear_lattice ( nextLattice );
 
   if(samuBrain->isLearned())
+  {
     ++age;
-  
+    xx = 34;
+  }
+    
   int ind =  age; //( m_time/6000 ) % hello.size();
   qDebug() << m_time
            << "   WORD:" << ind << hello[ind].c_str()
