@@ -1,7 +1,7 @@
 # SamuVocab, exp. 7, cognitive mental organs: MPU (Mental Processing Unit), acquiring higher-order knowledge
 
 - The agent learns and recognizes a vocabulary of 20 words. It is shown in video at https://youtu.be/KGUrMSvD4RI
-- The agent learns and recognizes a vocabulary of 1200 words. 
+- The agent learns and recognizes a vocabulary of 1200 words. It is shown in video at https://youtu.be/kjhJ7Q-7Ys0
 
 ## Usage
 
