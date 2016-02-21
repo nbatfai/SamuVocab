@@ -148,6 +148,7 @@ class SamuBrain
     MORGAN m_morgan;
 
     bool m_haveAlreadyLearnt {false};
+    bool m_haveAlreadyLearntSignal {false};
     bool m_searching {false};
     long m_internal_clock {0};
     int m_haveAlreadyLearntTime {0};
@@ -177,6 +178,12 @@ public:
 
     bool isHabituation() const {
         return m_habituation;
+    }
+    bool isLearned()  {
+      // only a temporary trick
+        bool ret = m_haveAlreadyLearntSignal;
+        m_haveAlreadyLearntSignal = false; 
+        return ret;
     }
 
 };

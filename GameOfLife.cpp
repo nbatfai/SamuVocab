@@ -1593,7 +1593,10 @@ void GameOfLife::development()
 
   clear_lattice ( nextLattice );
 
-  int ind = ( m_time/6000 ) % hello.size();
+  if(samuBrain->isLearned())
+    ++age;
+  
+  int ind =  age; //( m_time/6000 ) % hello.size();
   qDebug() << m_time
            << "   WORD:" << ind << hello[ind].c_str()
            << "Observation (MPU):" << samuBrain->get_foobar().c_str();

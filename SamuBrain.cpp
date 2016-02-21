@@ -664,8 +664,6 @@ void SamuBrain::learning ( int **reality, int **predictions, int ***fp, int ***f
 
   ++m_internal_clock;
 
-  int sum {0};
-  int vsum {0};
 
   if ( m_searching )
     {
@@ -675,30 +673,48 @@ void SamuBrain::learning ( int **reality, int **predictions, int ***fp, int ***f
 
       MORGAN maxSamuQl {nullptr};
 
-      for ( auto& mpu : m_brain )
+      //#pragma omp parallel for
+
+      #pragma omp parallel
+      {
+        #pragma omp single
         {
 
-          MORGAN morgan = mpu.second;
-
-          sum = pred ( morgan, reality, predictions, 4, vsum );
-
-          double mon {-1.0};
-          Habituation &h = morgan->getHabituation();
-          bool habi =
-            h.is_habituation ( vsum, sum, mon );
-
-          qDebug() << "   HABITUATION MONITOR:"
-                   << m_internal_clock
-                   << "[SEARCHING] MPU:" << mpu.first.c_str()
-                   << "bogocertainty of convergence:"
-                   << mon*100 << "%";
-
-          if ( habi || mon >= 1.0)//.9 )
+          for ( auto mpu : m_brain )
             {
-              maxSamuQl = mpu.second;
-            }
 
-        } // for MPUs
+              #pragma omp task
+              {
+
+                int sum {0};
+                int vsum {0};
+
+
+                MORGAN morgan = mpu.second;
+
+                sum = pred ( morgan, reality, predictions, 4, vsum );
+
+                double mon {-1.0};
+                Habituation &h = morgan->getHabituation();
+                bool habi =
+                  h.is_habituation ( vsum, sum, mon );
+
+                qDebug() << "   HABITUATION MONITOR:"
+                         << m_internal_clock
+                         << "[SEARCHING] MPU:" << mpu.first.c_str()
+                         << "bogocertainty of convergence:"
+                         << mon*100 << "%";
+
+                if ( habi || mon >= 1.0 ) //.9 )
+                  {
+                    maxSamuQl = mpu.second;
+                  }
+
+
+              }//task
+            } // for MPUs
+        }//single
+      }//para
 
       // nem baj, ha sokáig kell menni, mert a párhuzamos szálakból a kiválasztott
       // folytatódik, a párhuzamosság a költség, meg ha nem talál, hanem új MPU kell...
@@ -746,6 +762,10 @@ void SamuBrain::learning ( int **reality, int **predictions, int ***fp, int ***f
   else
     {
 
+      int sum {0};
+      int vsum {0};
+
+
       //sum = pred ( reality, predictions, !searching, vsum ); //!haveAlreadyLearnt, vsum );
       sum = pred ( reality, predictions, m_haveAlreadyLearnt?5:0, vsum );
 
@@ -767,6 +787,8 @@ void SamuBrain::learning ( int **reality, int **predictions, int ***fp, int ***f
             {
 
               m_haveAlreadyLearnt = true;
+	      
+	      m_haveAlreadyLearntSignal = true;
 
               int t = m_internal_clock - m_haveAlreadyLearntTime;
               if ( t > m_maxLearningTime )
