@@ -58,6 +58,8 @@ Samu (Nahshon)
 http://arxiv.org/abs/1511.02889,
 https://github.com/nbatfai/nahshon
 
+---
+
 SamuLife
 https://github.com/nbatfai/SamuLife,
 https://youtu.be/b60m__3I-UM
@@ -77,5 +79,10 @@ https://github.com/nbatfai/SamuBrain
 SamuCopy
 https://github.com/nbatfai/SamuCopy
 
+---
+
 SamuTicker
 https://github.com/nbatfai/SamuTicker
+
+SamuVocab
+https://github.com/nbatfai/SamuVocab
