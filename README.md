@@ -1,7 +1,8 @@
 # SamuVocab, exp. 7, cognitive mental organs: MPU (Mental Processing Unit), acquiring higher-order knowledge
 
 - The agent learns and recognizes a vocabulary of 20 words. It is shown in video at https://youtu.be/KGUrMSvD4RI
-- The agent learns and recognizes a vocabulary of 1200 words. It is shown in video at https://youtu.be/kjhJ7Q-7Ys0
+- The agent is learning and recognizing a vocabulary of 1200 words. It is shown in video at https://youtu.be/kjhJ7Q-7Ys0
+- The agent has learned and recognized the first 375 of the 1200 words then it has run out of 16 Gb memory :(
 
 I am looking for a definition of a mathematical machine for learning. 
 The Mental Processing Unit (MPU) is a computational mental organ introduced 
@@ -51,6 +52,10 @@ This version is tagged by 'v20words'. The resulting can be found at https://yout
 
 Rebecca Sitton's word list of 1200 high frequency words is used in GameOfLife.cpp.
 This version is tagged by 'v1200words'. The resulting can be found at https://youtu.be/kjhJ7Q-7Ys0
+
+### The agent has learned and recognized the first 375 of the 1200 words
+
+![screenshot from 2016-02-22 19-29-05](https://cloud.githubusercontent.com/assets/3148120/13228894/8381a26c-d99e-11e5-91fe-5aeb1d47145e.png)
 
 ## Previous other experiments
 
