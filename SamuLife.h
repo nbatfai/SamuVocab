@@ -64,13 +64,13 @@ class SamuLife : public QMainWindow
 
     int m_cw {12*2}, m_ch {10*2};
     GameOfLife *gameOfLife;
-    int **lattice {nullptr};
-    int **prediction {nullptr};
-    int **fp {nullptr};
-    int **fr {nullptr};
+    char **lattice {nullptr};
+    char **prediction {nullptr};
+    char **fp {nullptr};
+    char **fr {nullptr};
 
     public slots :
-    void updateCells ( int **, int **, int **, int ** );
+    void updateCells ( char **, char **, char **, char ** );
 
 public:
     SamuLife ( int w = 30, int h = 20, QWidget *parent = 0 );

@@ -877,6 +877,8 @@ return 1000.0/ ( ( ( double ) n ) + 1000.0 );
 
     }
 
+#ifndef Q_LOOKUP_TABLE //*** This condition only for temporary use in the project SamuVocab (without approx NN)
+    
     void clear ( void ) {
         tree = &root;
         depth = 0;
@@ -888,7 +890,8 @@ return 1000.0/ ( ( ( double ) n ) + 1000.0 );
         debug_tree ( &root, std::cerr );
         depth = save_depth;
     }
-
+#endif
+    
     double sigmoid ( int n ) {
         return 1.0/ ( 1.0 + exp ( -n ) );
     }
@@ -1040,6 +1043,8 @@ return 1000.0/ ( ( ( double ) n ) + 1000.0 );
         return min_reward;
     }
 
+#ifndef Q_LOOKUP_TABLE //*** This condition only for temporary use in the project SamuVocab (without approx NN)
+    
     void operator<< ( SPOTriplet triplet ) {
         TripletNode *p = tree->getChild ( triplet );
         if ( !p ) {
@@ -1058,6 +1063,7 @@ return 1000.0/ ( ( ( double ) n ) + 1000.0 );
             ++depth;
         }
     }
+#endif
 
     ReinforcedAction reinforcedAction() const {
         return reinforced_action;
@@ -1070,6 +1076,7 @@ return 1000.0/ ( ( ( double ) n ) + 1000.0 );
 
 private:
 
+#ifndef Q_LOOKUP_TABLE //*** This condition only for temporary use in the project SamuVocab (without approx NN)
     class TripletNode
     {
     public:
@@ -1109,11 +1116,14 @@ private:
     TripletNode *tree;
     int depth {0};
 
+#endif    
+    
     /*
     std::random_device zinit;
     std::default_random_engine zgen {zinit() };
     */
 
+#ifndef Q_LOOKUP_TABLE //*** This condition only for temporary use in the project SamuVocab (without approx NN)
     void debug_tree ( TripletNode * node, std::ostream & os ) {
         if ( node != nullptr ) {
             ++depth;
@@ -1136,6 +1146,7 @@ private:
             --depth;
         }
     }
+#endif 
 
     int N_e = 3;
 
@@ -1183,6 +1194,8 @@ private:
     double max_reward {15000.20};
     double min_reward {-15000.70};
 
+    
+#ifndef Q_LOOKUP_TABLE //*** This condition only for temporary use in the project SamuVocab (without approx NN)
 #ifdef PLACE_VALUE
     double prev_image [10*3];
 #elif FOUR_TIMES
@@ -1194,7 +1207,8 @@ private:
 #else
     double prev_image [256*256];
 #endif
-
+#endif
+    
     ReinforcedAction reinforced_action {"unreinforced", -1};
     std::map<ReinforcedAction, int> rules;
 };

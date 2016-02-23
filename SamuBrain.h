@@ -80,6 +80,9 @@ class Habituation
     int masum {0};
     int mavsum {0};
 
+    Habituation ( const Habituation & );
+    Habituation & operator= ( const Habituation & );
+
 public:
 
     Habituation() {
@@ -108,9 +111,13 @@ class MentalProcessingUnit
     MPU m_samuQl;
     Habituation m_habi;
 
-    int **m_prev;
-    int** fr;
-    int** fp;
+    char **m_prev;
+    char ** fr;
+    char ** fp;
+
+    MentalProcessingUnit ( const MentalProcessingUnit & );
+    MentalProcessingUnit & operator= ( const MentalProcessingUnit & );
+
 
 public:
     MentalProcessingUnit ( int w = 30, int h = 20 );
@@ -119,13 +126,13 @@ public:
     MPU getSamu() {
         return m_samuQl;
     }
-    int ** getPrev() {
+    char ** getPrev() {
         return m_prev;
     }
-    int ** getFp() {
+    char ** getFp() {
         return fp;
     }
-    int ** getFr() {
+    char ** getFr() {
         return fr;
     }
     Habituation& getHabituation() {
@@ -157,19 +164,23 @@ class SamuBrain
     bool m_habituation {false};
 
     MORGAN newMPU ();
-    int pred ( int **reality, int **predictions, int, int & );
-    int pred ( MORGAN, int **reality, int **predictions, int, int & );
+    int pred ( char **reality, char **predictions, int, int & );
+    int pred ( MORGAN, char **reality, char **predictions, int, int & );
     void init_MPUs ( bool ex );
     std::string get_foobar ( MORGAN ) const;
 
-    int *** fp;
-    int *** fr;
+    char *** fp;
+    char *** fr;
+
+    SamuBrain ( const SamuBrain & );
+    SamuBrain & operator= ( const SamuBrain & );
+
 
 public:
     SamuBrain ( int w = 30, int h = 20 );
     ~SamuBrain();
 
-    void learning ( int **reality, int **predictions, int*** fp, int *** fr );
+    void learning ( char **reality, char **predictions, char *** fp, char *** fr );
     int getW() const;
     int getH() const;
     bool isSearching() const;
@@ -180,9 +191,9 @@ public:
         return m_habituation;
     }
     bool isLearned()  {
-      // only a temporary trick
+        // only a temporary trick
         bool ret = m_haveAlreadyLearntSignal;
-        m_haveAlreadyLearntSignal = false; 
+        m_haveAlreadyLearntSignal = false;
         return ret;
     }
 

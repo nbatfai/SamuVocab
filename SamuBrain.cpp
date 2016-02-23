@@ -78,15 +78,15 @@ MentalProcessingUnit::MentalProcessingUnit ( int w, int h ) : m_w ( w ), m_h ( h
       m_samuQl[i] = new QL [m_w];
     }
 
-  m_prev = new int*[m_h];
-  fp = new int*[m_h];
-  fr = new int*[m_h];
+  m_prev = new char*[m_h];
+  fp = new char*[m_h];
+  fr = new char*[m_h];
 
   for ( int i {0}; i<m_h; ++i )
     {
-      m_prev[i] = new int [m_w];
-      fp[i] = new int [m_w];
-      fr[i] = new int [m_w];
+      m_prev[i] = new char [m_w];
+      fp[i] = new char [m_w];
+      fr[i] = new char [m_w];
     }
 
   for ( int r {0}; r<m_h; ++r )
@@ -192,17 +192,17 @@ double SamuBrain::howMuchLearned ( MPU samuQl ) const
 }
 */
 
-int SamuBrain::pred ( int **reality, int **predictions, int isLearning, int & vsum )
+int SamuBrain::pred ( char **reality, char **predictions, int isLearning, int & vsum )
 {
   return pred ( m_morgan, reality, predictions, isLearning, vsum );
 }
 
 /*
-int SamuBrain::pred ( MORGAN morgan, int **reality, int **predictions, int isLearning, int & vsum )
+int SamuBrain::pred ( MORGAN morgan, char **reality, char **predictions, int isLearning, int & vsum )
 {
 
   MPU samuQl = morgan->getSamu();
-  int ** prev = morgan->getPrev();
+  char ** prev = morgan->getPrev();
 
   //double img_input[40];
   int colors[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -299,13 +299,13 @@ int SamuBrain::pred ( MORGAN morgan, int **reality, int **predictions, int isLea
 }
 */
 
-int SamuBrain::pred ( MORGAN morgan, int **reality, int **predictions, int isLearning, int & vsum )
+int SamuBrain::pred ( MORGAN morgan, char **reality, char **predictions, int isLearning, int & vsum )
 {
 
   MPU samuQl = morgan->getSamu();
-  int ** prev = morgan->getPrev();
-  int ** fp = morgan->getFp();
-  int ** fr = morgan->getFr();
+  char ** prev = morgan->getPrev();
+  char ** fp = morgan->getFp();
+  char ** fr = morgan->getFr();
 
   //double img_input[40];
   //int colors[256];
@@ -657,7 +657,7 @@ bool Habituation::is_habituation ( int vsum, int sum, double &mon )
 }
 
 
-void SamuBrain::learning ( int **reality, int **predictions, int ***fp, int ***fr )
+void SamuBrain::learning ( char **reality, char **predictions, char ***fp, char ***fr )
 {
   this->fp = fp;
   this->fr = fr;
@@ -787,8 +787,8 @@ void SamuBrain::learning ( int **reality, int **predictions, int ***fp, int ***f
             {
 
               m_haveAlreadyLearnt = true;
-	      
-	      m_haveAlreadyLearntSignal = true;
+
+              m_haveAlreadyLearntSignal = true;
 
               int t = m_internal_clock - m_haveAlreadyLearntTime;
               if ( t > m_maxLearningTime )

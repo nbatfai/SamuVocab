@@ -63,12 +63,12 @@ else
   gameOfLife = new GameOfLife ( w, h );
   gameOfLife->start();
 
-  connect ( gameOfLife, SIGNAL ( cellsChanged ( int **, int **, int **, int ** ) ),
-            this, SLOT ( updateCells ( int **, int **, int **, int ** ) ) );
+  connect ( gameOfLife, SIGNAL ( cellsChanged ( char **, char **, char **, char ** ) ),
+            this, SLOT ( updateCells ( char **, char **, char **, char ** ) ) );
 
 }
 
-void SamuLife::updateCells ( int **lattice, int **prediction, int **fp, int** fr )
+void SamuLife::updateCells ( char **lattice, char **prediction, char **fp, char** fr )
 {
   this->lattice = lattice;
   this->prediction = prediction;
