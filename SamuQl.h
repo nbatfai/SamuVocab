@@ -284,7 +284,7 @@ private:
 typedef std::string Feeling;
 #endif
 
-typedef int SPOTriplet;
+typedef char SPOTriplet;
 typedef std::pair<std::string, SPOTriplet> ReinforcedAction;
 
 class QL
