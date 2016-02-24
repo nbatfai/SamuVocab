@@ -299,6 +299,148 @@ int SamuBrain::pred ( MORGAN morgan, char **reality, char **predictions, int isL
 }
 */
 
+
+void SamuBrain::apred ( /*MORGAN morgan*/ int r, int c, char **reality, char **predictions, int isLearning )
+{
+
+
+
+  /*
+  for ( int r {0}; r<m_h; ++r )
+    {
+      for ( int c {0}; c<m_w; ++c )
+        {
+  */
+
+
+
+  unsigned long long prg {1};
+
+  prg *= prime[0];
+  prg *= prime[13+reality[r][c]];
+
+  if ( c>2 )
+    {
+      prg *= prime[1];
+      prg *= prime[14+ reality[r][c-1]]; //img_input[1];
+      prg *= prime[2];
+      prg *= prime[15+  reality[r][c-2]]; //img_input[1];
+      prg *= prime[3];
+      prg *= prime[16+  reality[r][c-3]]; //img_input[1];
+
+    }
+  else if ( c>1 )
+    {
+      prg *= prime[4];
+      prg *= prime[17+  reality[r][c-1]]; //img_input[1];
+      prg *= prime[5];
+      prg *= prime[18+  reality[r][c-2]]; //img_input[1];
+
+    }
+  else if ( c >0 )
+    {
+      prg *= prime[6];
+      prg *= prime[19+  reality[r][c-1]]; //img_input[1];
+    }
+
+  if ( c<m_w-3 )
+    {
+      prg *= prime[7];
+      prg *= prime[20+  reality[r][c+1]]; //img_input[1];
+      prg *= prime[8];
+      prg *= prime[21+  reality[r][c+2]]; //img_input[1];
+      prg *= prime[9];
+      prg *= prime[22+  reality[r][c+3]]; //img_input[1];
+
+
+    }
+  else if ( c<m_w-2 )
+    {
+      prg *= prime[10];
+      prg *= prime[23+  reality[r][c+1]]; //img_input[1];
+      prg *= prime[11];
+      prg *= prime[24+  reality[r][c+2]]; //img_input[1];
+    }
+  else if ( c <m_w-1 )
+    {
+      prg *= prime[12];
+      prg *= prime[25+  reality[r][c+1]]; //img_input[1];
+    }
+
+  /*
+  qDebug() << "   PPP:"
+         << m_internal_clock
+         << prg << "%";
+  */
+
+  #pragma omp parallel
+  {
+    #pragma omp single
+    {
+
+      for ( auto mpu : m_brain )
+        {
+
+          #pragma omp task
+          {
+
+            MORGAN morgan = mpu.second;
+            MPU samuQl = morgan->getSamu();
+            char ** prev = morgan->getPrev();
+            char ** fp = morgan->getFp();
+            char ** fr = morgan->getFr();
+
+            SPOTriplet response = samuQl[r][c] ( reality[r][c], prg, isLearning == 0 );
+
+            if ( reality[r][c] )
+              {
+                ++morgan->vsum;
+                if ( reality[r][c] == prev[r][c] )
+                  {
+                    ++morgan->sum;
+                  }
+              }
+
+
+            if ( reality[r][c] == prev[r][c] )
+              {
+                if ( fp[r][c] < 255-60 )
+                  {
+                    fp[r][c]+=60;
+                  }
+              }
+            else
+              {
+                if ( fp[r][c] > 60 )
+                  {
+                    fp[r][c]-=60;
+                  }
+              }
+
+
+            fr[r][c] = samuQl[r][c].getNumRules();
+
+            prev[r][c] = predictions[r][c] = response;
+
+            if ( isLearning>0 && predictions[r][c] == 0 )
+              {
+                predictions[r][c] = isLearning;
+              }
+
+          }
+        }// for
+
+    }
+
+  }
+  /*        }
+
+      }
+  */
+  //return sum;
+}
+
+
 int SamuBrain::pred ( MORGAN morgan, char **reality, char **predictions, int isLearning, int & vsum )
 {
 
@@ -727,6 +869,7 @@ void SamuBrain::learning ( char **reality, char **predictions, char ***fp, char 
 
       //#pragma omp parallel for
 
+      /*
       #pragma omp parallel
       {
         #pragma omp single
@@ -737,36 +880,98 @@ void SamuBrain::learning ( char **reality, char **predictions, char ***fp, char 
 
               #pragma omp task
               {
+      */
 
-                int sum {0};
-                int vsum {0};
+      for ( auto mpu : m_brain )
+        {
 
+          MORGAN morgan = mpu.second;
+          morgan->sum = 0;
+          morgan->vsum = 0;
 
-                MORGAN morgan = mpu.second;
-
-                sum = pred ( morgan, reality, predictions, 4, vsum );
-
-                double mon {-1.0};
-                Habituation &h = morgan->getHabituation();
-                bool habi =
-                  h.is_habituation ( vsum, sum, mon );
-
-                qDebug() << "   HABITUATION MONITOR:"
-                         << m_internal_clock
-                         << "[SEARCHING] MPU:" << mpu.first.c_str()
-                         << "bogocertainty of convergence:"
-                         << mon*100 << "%";
-
-                if ( habi || mon >= 1.0 ) //.9 )
-                  {
-                    maxSamuQl = mpu.second;
-                  }
+        }
 
 
-              }//task
-            } // for MPUs
-        }//single
-      }//para
+      for ( int r {0}; r<m_h; ++r )
+        {
+          for ( int c {0}; c<m_w; ++c )
+            {
+
+              apred ( r, c, reality, predictions, 4 );
+
+            }
+
+        }
+      /*
+      for ( int r {0}; r<m_h; ++r )
+      {
+        for ( int c {0}; c<m_w; ++c )
+          {
+      */
+      int ell = 0	;
+
+
+      /* 20 - real 2m37 vs. 4m54
+            #pragma omp parallel
+      {
+      #pragma omp single
+      {
+
+        for ( auto mpu : m_brain )
+          {
+
+            #pragma omp task
+            {
+      */
+      for ( auto mpu : m_brain )
+        {
+
+
+
+          int sum {0};
+          int vsum {0};
+
+
+          MORGAN morgan = mpu.second;
+
+          //sum = pred ( morgan, reality, predictions, 4, vsum );
+          sum = morgan->sum;
+          vsum = morgan->vsum;
+
+          double mon {-1.0};
+          Habituation &h = morgan->getHabituation();
+          bool habi =
+            h.is_habituation ( vsum, sum, mon );
+          /*
+                        qDebug() << "   HABITUATION MONITOR:"
+                                 << m_internal_clock
+                                 << "[SEARCHING] MPU:" << mpu.first.c_str()
+                                 << "bogocertainty of convergence:"
+                                 << mon*100 << "%";
+          */
+          if ( habi || mon >= 1.0 ) //.9 )
+            {
+              maxSamuQl = mpu.second;
+              ++ell;
+            }
+
+          qDebug() << "   HABITUATION MONITOR:"
+                   << m_internal_clock
+                   << "[SEARCHING] MPU:" << mpu.first.c_str()
+                   << "bogocertainty of convergence:"
+                   << mon*100 << "%" << "ELL" << ell;
+
+        }
+      /*
+              }
+      	}
+      	*/
+      /*
+                    }//task
+                  } // for MPUs
+              }//single
+            }//para
+      */
 
       // nem baj, ha sokáig kell menni, mert a párhuzamos szálakból a kiválasztott
       // folytatódik, a párhuzamosság a költség, meg ha nem talál, hanem új MPU kell...
