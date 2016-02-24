@@ -285,7 +285,7 @@ typedef std::string Feeling;
 #endif
 
 typedef char SPOTriplet;
-typedef std::pair<std::string, SPOTriplet> ReinforcedAction;
+typedef std::pair<long long, SPOTriplet> ReinforcedAction;
 
 class QL
 {
@@ -754,11 +754,11 @@ public:
 
 #else
 
-    double max_ap_Q_sp_ap ( std::string prg ) {
+    double max_ap_Q_sp_ap ( long long prg ) {
         double q_spap;
         double min_q_spap = -std::numeric_limits<double>::max();
 
-        for ( std::map<SPOTriplet, std::map<std::string, double>>::iterator it=table_.begin(); it!=table_.end(); ++it ) {
+        for ( std::map<SPOTriplet, std::map<long long, double>>::iterator it=table_.begin(); it!=table_.end(); ++it ) {
             q_spap = it->second[prg];
             if ( q_spap > min_q_spap ) {
                 min_q_spap = q_spap;
@@ -768,12 +768,12 @@ public:
         return min_q_spap;
     }
 
-    SPOTriplet argmax_ap_f ( std::string prg ) {
+    SPOTriplet argmax_ap_f ( long long prg ) {
         double q_spap;
         double min_f = -std::numeric_limits<double>::max();
         SPOTriplet ap;
 
-        for ( std::map<SPOTriplet, std::map<std::string, double>>::iterator it=table_.begin(); it!=table_.end(); ++it ) {
+        for ( std::map<SPOTriplet, std::map<long long, double>>::iterator it=table_.begin(); it!=table_.end(); ++it ) {
 
             q_spap = it->second[prg];
 
@@ -788,7 +788,7 @@ public:
         return ap;
     }
 
-    SPOTriplet operator() ( SPOTriplet triplet, std::string prg, bool isLearning ) {
+    SPOTriplet operator() ( SPOTriplet triplet, long long prg, bool isLearning ) {
 
         // s' = triplet
         // r' = reward
@@ -863,14 +863,14 @@ public:
     double alpha ( int n ) {
 
         //return 1.0/ ( ( ( double ) n ) + 1.0 );
-return 1000.0/ ( ( ( double ) n ) + 1000.0 );
+        return 1000.0/ ( ( ( double ) n ) + 1000.0 );
     }
 
     void clearn ( void ) {
 
-        for ( std::map<SPOTriplet, std::map<std::string, int>>::iterator it=frqs.begin(); it!=frqs.end(); ++it ) {
+        for ( std::map<SPOTriplet, std::map<long long, int>>::iterator it=frqs.begin(); it!=frqs.end(); ++it ) {
 
-            for ( std::map<std::string, int>::iterator itt=it->second.begin(); itt!=it->second.end(); ++itt ) {
+            for ( std::map<long long, int>::iterator itt=it->second.begin(); itt!=it->second.end(); ++itt ) {
                 itt->second = 0;
             }
         }
@@ -878,155 +878,155 @@ return 1000.0/ ( ( ( double ) n ) + 1000.0 );
     }
 
 #ifndef Q_LOOKUP_TABLE //*** This condition only for temporary use in the project SamuVocab (without approx NN)
-    
-    void clear ( void ) {
-        tree = &root;
-        depth = 0;
-    }
-
-    void debug_tree ( void ) {
-        int save_depth = depth;
-        depth = 0;
-        debug_tree ( &root, std::cerr );
-        depth = save_depth;
-    }
+ 
+void clear ( void ) {
+tree = &root;
+depth = 0;
+}
+ 
+void debug_tree ( void ) {
+int save_depth = depth;
+depth = 0;
+debug_tree ( &root, std::cerr );
+depth = save_depth;
+}
 #endif
-    
-    double sigmoid ( int n ) {
-        return 1.0/ ( 1.0 + exp ( -n ) );
+ 
+double sigmoid ( int n ) {
+return 1.0/ ( 1.0 + exp ( -n ) );
+}
+ 
+void scalen ( double s ) {
+ 
+for ( std::map<SPOTriplet, std::map<long long, int>>::iterator it=frqs.begin(); it!=frqs.end(); ++it ) {
+ 
+for ( std::map<long long, int>::iterator itt=it->second.begin(); itt!=it->second.end(); ++itt ) {
+//itt->second -= ( itt->second / 5 );
+itt->second *= s;
+}
+}
+ 
+}
+/*
+    void save_prcps ( std::fstream & samuFile ) {
+        samuFile << prcps.size();
+ 
+        int prev_p {0};
+        for ( std::map<SPOTriplet, Perceptron*>::iterator it=prcps.begin(); it!=prcps.end(); ++it ) {
+            int p = ( std::distance ( prcps.begin(), it ) * 100 ) / prcps.size();
+            if ( p > prev_p+9 ) {
+                std::cerr << "Saving Samu: "
+                          << p
+                          << "% (perceptrons)"
+                          << std::endl;
+                prev_p = p;
+            }
+            samuFile << " "
+                     << it->first;
+            it->second->save ( samuFile );
+        }
     }
-
-    void scalen ( double s ) {
-
+ 
+    void save_frqs ( std::fstream & samuFile ) {
+        samuFile << std::endl
+                 << frqs.size();
+ 
+        int prev_p {0};
         for ( std::map<SPOTriplet, std::map<std::string, int>>::iterator it=frqs.begin(); it!=frqs.end(); ++it ) {
-
+ 
+            int p = ( std::distance ( frqs.begin(), it ) * 100 ) / frqs.size();
+            if ( p > prev_p+9 ) {
+                std::cerr << "Saving Samu: "
+                          << p
+                          << "% (frequency table)"
+                          << std::endl;
+                prev_p = p;
+            }
+ 
+            samuFile << " "
+                     << it->first
+                     << " "
+                     << it->second.size();
             for ( std::map<std::string, int>::iterator itt=it->second.begin(); itt!=it->second.end(); ++itt ) {
-                //itt->second -= ( itt->second / 5 );
-                itt->second *= s;
-            }
-        }
-
-    }
-    /*
-        void save_prcps ( std::fstream & samuFile ) {
-            samuFile << prcps.size();
-
-            int prev_p {0};
-            for ( std::map<SPOTriplet, Perceptron*>::iterator it=prcps.begin(); it!=prcps.end(); ++it ) {
-                int p = ( std::distance ( prcps.begin(), it ) * 100 ) / prcps.size();
-                if ( p > prev_p+9 ) {
-                    std::cerr << "Saving Samu: "
-                              << p
-                              << "% (perceptrons)"
-                              << std::endl;
-                    prev_p = p;
-                }
                 samuFile << " "
-                         << it->first;
-                it->second->save ( samuFile );
-            }
-        }
-
-        void save_frqs ( std::fstream & samuFile ) {
-            samuFile << std::endl
-                     << frqs.size();
-
-            int prev_p {0};
-            for ( std::map<SPOTriplet, std::map<std::string, int>>::iterator it=frqs.begin(); it!=frqs.end(); ++it ) {
-
-                int p = ( std::distance ( frqs.begin(), it ) * 100 ) / frqs.size();
-                if ( p > prev_p+9 ) {
-                    std::cerr << "Saving Samu: "
-                              << p
-                              << "% (frequency table)"
-                              << std::endl;
-                    prev_p = p;
-                }
-
-                samuFile << " "
-                         << it->first
+                         << itt->first
                          << " "
-                         << it->second.size();
-                for ( std::map<std::string, int>::iterator itt=it->second.begin(); itt!=it->second.end(); ++itt ) {
-                    samuFile << " "
-                             << itt->first
-                             << " "
-                             << itt->second;
-                }
-            }
-
-        }
-
-        void save ( std::string & fname ) {
-            std::fstream samuFile ( fname,  std::ios_base::out );
-
-            save_prcps ( samuFile );
-            save_frqs ( samuFile );
-
-            samuFile.close();
-        }
-
-        void load_prcps ( std::fstream & file ) {
-            int prcpsSize {0};
-            file >> prcpsSize;
-
-            int prev_p {0};
-            SPOTriplet t;
-            for ( int s {0}; s< prcpsSize; ++s ) {
-                int p = ( s * 100 ) / prcpsSize;
-                if ( p > prev_p+9 ) {
-                    std::cerr << "Loading Samu: "
-                              << p
-                              << "% (perceptrons)"
-                              << std::endl;
-                    prev_p = p;
-                }
-
-
-                file >> t;
-
-                prcps[t] = new Perceptron ( file );
-            }
-
-        }
-
-        void load_frqs ( std::fstream & file ) {
-            int frqsSize {0};
-            file >> frqsSize;
-
-            int prev_pc {0};
-            int mapSize {0};
-            SPOTriplet t;
-            std::string p;
-            int n;
-            for ( int s {0}; s< frqsSize; ++s ) {
-
-                int pc = ( s * 100 ) / frqsSize;
-                if ( pc > prev_pc+9 ) {
-                    std::cerr << "Loading Samu: "
-                              << pc
-                              << "% (frequency table)"
-                              << std::endl;
-                    prev_pc = pc;
-                }
-
-                file >> t;
-                file >> mapSize;
-                for ( int ss {0}; ss< mapSize; ++ss ) {
-                    file >> p;
-                    file >> n;
-
-                    frqs[t][p] = n;
-                }
+                         << itt->second;
             }
         }
-
-
-        void load ( std::fstream & file ) {
-            load_prcps ( file );
-            load_frqs ( file );
+ 
+    }
+ 
+    void save ( std::string & fname ) {
+        std::fstream samuFile ( fname,  std::ios_base::out );
+ 
+        save_prcps ( samuFile );
+        save_frqs ( samuFile );
+ 
+        samuFile.close();
+    }
+ 
+    void load_prcps ( std::fstream & file ) {
+        int prcpsSize {0};
+        file >> prcpsSize;
+ 
+        int prev_p {0};
+        SPOTriplet t;
+        for ( int s {0}; s< prcpsSize; ++s ) {
+            int p = ( s * 100 ) / prcpsSize;
+            if ( p > prev_p+9 ) {
+                std::cerr << "Loading Samu: "
+                          << p
+                          << "% (perceptrons)"
+                          << std::endl;
+                prev_p = p;
+            }
+ 
+ 
+            file >> t;
+ 
+            prcps[t] = new Perceptron ( file );
         }
-    */
+ 
+    }
+ 
+    void load_frqs ( std::fstream & file ) {
+        int frqsSize {0};
+        file >> frqsSize;
+ 
+        int prev_pc {0};
+        int mapSize {0};
+        SPOTriplet t;
+        std::string p;
+        int n;
+        for ( int s {0}; s< frqsSize; ++s ) {
+ 
+            int pc = ( s * 100 ) / frqsSize;
+            if ( pc > prev_pc+9 ) {
+                std::cerr << "Loading Samu: "
+                          << pc
+                          << "% (frequency table)"
+                          << std::endl;
+                prev_pc = pc;
+            }
+ 
+            file >> t;
+            file >> mapSize;
+            for ( int ss {0}; ss< mapSize; ++ss ) {
+                file >> p;
+                file >> n;
+ 
+                frqs[t][p] = n;
+            }
+        }
+    }
+ 
+ 
+    void load ( std::fstream & file ) {
+        load_prcps ( file );
+        load_frqs ( file );
+    }
+*/
     int get_N_e ( void ) const {
         return N_e;
     }
@@ -1044,173 +1044,177 @@ return 1000.0/ ( ( ( double ) n ) + 1000.0 );
     }
 
 #ifndef Q_LOOKUP_TABLE //*** This condition only for temporary use in the project SamuVocab (without approx NN)
-    
-    void operator<< ( SPOTriplet triplet ) {
-        TripletNode *p = tree->getChild ( triplet );
-        if ( !p ) {
-            if ( depth < 10 ) {
-                TripletNode *tn = new TripletNode ( triplet );
-                tree->setChild ( triplet, tn );
-                tree = &root;
-                depth = 0;
-            } else {
-                tree = &root;
-                depth = 0;
-                *this << triplet;
-            }
-        } else {
-            tree = p;
-            ++depth;
-        }
-    }
+ 
+void operator<< ( SPOTriplet triplet ) {
+TripletNode *p = tree->getChild ( triplet );
+if ( !p ) {
+if ( depth < 10 ) {
+TripletNode *tn = new TripletNode ( triplet );
+tree->setChild ( triplet, tn );
+tree = &root;
+depth = 0;
+} else {
+tree = &root;
+depth = 0;
+*this << triplet;
+}
+} else {
+tree = p;
+++depth;
+}
+}
 #endif
-
-    ReinforcedAction reinforcedAction() const {
-        return reinforced_action;
-    }
-
-    int getNumRules() const {
-        return rules.size();
-    }
-
-
+ 
+ReinforcedAction reinforcedAction() const {
+return reinforced_action;
+}
+ 
+int getNumRules() const {
+return rules.size();
+}
+ 
+ 
 private:
-
+ 
 #ifndef Q_LOOKUP_TABLE //*** This condition only for temporary use in the project SamuVocab (without approx NN)
-    class TripletNode
-    {
-    public:
-        TripletNode ( ) {
-        };
-        TripletNode ( SPOTriplet triplet ) :triplet ( triplet ) {
-        };
-        ~TripletNode () {
-        };
-        void setChild ( SPOTriplet &triplet, TripletNode * newChild ) {
-            children[triplet] = newChild;
-        }
-        TripletNode  *getChild ( SPOTriplet &triplet ) const {
-            std::map<SPOTriplet, TripletNode*>::const_iterator it = children.find ( triplet );
-
-            if ( it != children.end() ) {
-                return ( *it ).second;
-            } else {
-                return nullptr;
-            }
-        }
-        std::map<SPOTriplet, TripletNode*> & getChildren () {
-            return children;
-        }
-        SPOTriplet getTriplet () const {
-            return triplet;
-        }
-
-    private:
-        TripletNode ( const TripletNode & );
-        TripletNode & operator= ( const TripletNode & );
-        SPOTriplet triplet;
-        std::map<SPOTriplet, TripletNode*> children;
-    };
-
-    TripletNode root;
-    TripletNode *tree;
-    int depth {0};
-
-#endif    
-    
-    /*
-    std::random_device zinit;
-    std::default_random_engine zgen {zinit() };
-    */
-
-#ifndef Q_LOOKUP_TABLE //*** This condition only for temporary use in the project SamuVocab (without approx NN)
-    void debug_tree ( TripletNode * node, std::ostream & os ) {
-        if ( node != nullptr ) {
-            ++depth;
-            std::map<SPOTriplet, TripletNode*> children = node->getChildren();
-
-            for ( std::map<SPOTriplet, TripletNode*>::iterator it=children.begin(); it!=children.end(); ++it ) {
-                debug_tree ( ( *it ).second, os );
-            }
-
-            for ( int i {0}; i < depth; ++i )
-                if ( i == ( 2* ( depth-1 ) ) /2 ) {
-                    os  << depth - 1;
-                } else {
-                    os << "__";
-                }
-
-            os << "__ "
-               << node->getTriplet ()
-               << std::endl;
-            --depth;
-        }
-    }
-#endif 
-
-    int N_e = 3;
-
-    QL ( const QL & );
-    QL & operator= ( const QL & );
-
-#ifdef Q_LOOKUP_TABLE
-    double gamma = .2;
-#else
-    double gamma = .2;
+class TripletNode
+{
+public:
+TripletNode ( ) {
+};
+TripletNode ( SPOTriplet triplet ) :triplet ( triplet ) {
+};
+~TripletNode () {
+};
+void setChild ( SPOTriplet &triplet, TripletNode * newChild ) {
+children[triplet] = newChild;
+}
+TripletNode  *getChild ( SPOTriplet &triplet ) const {
+std::map<SPOTriplet, TripletNode*>::const_iterator it = children.find ( triplet );
+ 
+if ( it != children.end() ) {
+return ( *it ).second;
+} else {
+return nullptr;
+}
+}
+std::map<SPOTriplet, TripletNode*> & getChildren () {
+return children;
+}
+SPOTriplet getTriplet () const {
+return triplet;
+}
+ 
+private:
+TripletNode ( const TripletNode & );
+TripletNode & operator= ( const TripletNode & );
+SPOTriplet triplet;
+std::map<SPOTriplet, TripletNode*> children;
+};
+ 
+TripletNode root;
+TripletNode *tree;
+int depth {0};
+ 
 #endif
+ 
+/*
+std::random_device zinit;
+std::default_random_engine zgen {zinit() };
+*/
 
+#ifndef Q_LOOKUP_TABLE //*** This condition only for temporary use in the project SamuVocab (without approx NN)
+void debug_tree ( TripletNode * node, std::ostream & os ) {
+if ( node != nullptr ) {
+++depth;
+std::map<SPOTriplet, TripletNode*> children = node->getChildren();
+ 
+for ( std::map<SPOTriplet, TripletNode*>::iterator it=children.begin(); it!=children.end(); ++it ) {
+debug_tree ( ( *it ).second, os );
+}
+ 
+for ( int i {0}; i < depth; ++i )
+if ( i == ( 2* ( depth-1 ) ) /2 ) {
+os  << depth - 1;
+} else {
+os << "__";
+}
+ 
+os << "__ "
+<< node->getTriplet ()
+<< std::endl;
+--depth;
+}
+}
+#endif
+ 
+int N_e = 3;
+ 
+QL ( const QL & );
+QL & operator= ( const QL & );
+ 
 #ifdef Q_LOOKUP_TABLE
-    std::map<SPOTriplet, std::map<std::string, double>> table_;
+double gamma = .2;
 #else
-    std::map<SPOTriplet, Perceptron*> prcps;
+double gamma = .2;
+#endif
+ 
+#ifdef Q_LOOKUP_TABLE
+//std::map<SPOTriplet, std::map<std::string, double>> table_;
+std::map<SPOTriplet, std::map<long long, double>> table_;
+#else
+std::map<SPOTriplet, Perceptron*> prcps;
 #ifdef FEELINGS
-    std::map<Feeling, Perceptron*> prcps_f;
+std::map<Feeling, Perceptron*> prcps_f;
 #endif
 #ifdef QNN_DEBUG
-    double relevance {0.0};
+double relevance {0.0};
 #ifdef FEELINGS
-    double relevance_f {0.0};
+double relevance_f {0.0};
 #endif
 #endif
 #endif
-
-    std::map<SPOTriplet, std::map<std::string, int>> frqs;
+ 
+//std::map<SPOTriplet, std::map<std::string, int>> frqs;
+std::map<SPOTriplet, std::map<long long, int>> frqs;
+ 
 #ifdef FEELINGS
-    std::map<Feeling, std::map<std::string, int>> frqs_f;
+std::map<Feeling, std::map<std::string, int>> frqs_f;
 #endif
-    SPOTriplet prev_action;
+SPOTriplet prev_action;
 #ifdef FEELINGS
-    Feeling prev_feeling {"Hello, World!"};
+Feeling prev_feeling {"Hello, World!"};
 #endif
-    std::string prev_state;
-
-    double prev_reward { -std::numeric_limits<double>::max() };
-
-    /*
-    double max_reward {13.1};
-    double min_reward {-3.1};
-    */
+long long prev_state;
+ 
+double prev_reward { -std::numeric_limits<double>::max() };
+ 
+/*
+double max_reward {13.1};
+double min_reward {-3.1};
+*/
 
     double max_reward {15000.20};
     double min_reward {-15000.70};
 
-    
+
 #ifndef Q_LOOKUP_TABLE //*** This condition only for temporary use in the project SamuVocab (without approx NN)
 #ifdef PLACE_VALUE
-    double prev_image [10*3];
+double prev_image [10*3];
 #elif FOUR_TIMES
-    double prev_image [2*10*2*80];
+double prev_image [2*10*2*80];
 #elif CHARACTER_CONSOLE
-    double prev_image [10*80];
+double prev_image [10*80];
 #elif LIFEOFGAME
-    double prev_image [40];
+double prev_image [40];
 #else
-    double prev_image [256*256];
+double prev_image [256*256];
 #endif
 #endif
-    
-    ReinforcedAction reinforced_action {"unreinforced", -1};
-    std::map<ReinforcedAction, int> rules;
+ 
+//ReinforcedAction reinforced_action {"unreinforced", -1};
+ReinforcedAction reinforced_action {0, -1};
+std::map<ReinforcedAction, int> rules;
 };
-
+ 
 #endif

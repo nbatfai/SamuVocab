@@ -318,8 +318,10 @@ int SamuBrain::pred ( MORGAN morgan, char **reality, char **predictions, int isL
       for ( int c {0}; c<m_w; ++c )
         {
 
-          std::stringstream ss;
-          int ii {0};
+          //std::stringstream ss;
+          //int ii {0};
+
+          unsigned long long prg {1};
 
           /*
                 for ( int ci {0}; ci<5; ++ci )
@@ -363,51 +365,95 @@ int SamuBrain::pred ( MORGAN morgan, char **reality, char **predictions, int isL
                   */
 
 
-          ss << reality[r][c];
-          ss << '|';
+          //ss << reality[r][c];
+          //ss << '|';
+
+          prg *= prime[0];
+          prg *= prime[13+reality[r][c]];
 
           if ( c>2 )
             {
-              ss << reality[r][c-1]; //img_input[1];
-              ss << '|';
-              ss << reality[r][c-2]; //img_input[1];
-              ss << '|';
-              ss << reality[r][c-3]; //img_input[1];
-              ss << '|';
+              /*
+                  ss << reality[r][c-1]; //img_input[1];
+                  ss << '|';
+                  ss << reality[r][c-2]; //img_input[1];
+                  ss << '|';
+                  ss << reality[r][c-3]; //img_input[1];
+                  ss << '|';
+                  */
+
+              prg *= prime[1];
+              prg *= prime[14+ reality[r][c-1]]; //img_input[1];
+              prg *= prime[2];
+              prg *= prime[15+  reality[r][c-2]]; //img_input[1];
+              prg *= prime[3];
+              prg *= prime[16+  reality[r][c-3]]; //img_input[1];
+
             }
           else if ( c>1 )
             {
-              ss << reality[r][c-1]; //img_input[1];
-              ss << '|';
-              ss << reality[r][c-2]; //img_input[1];
-              ss << '|';
+              /*
+                  ss << reality[r][c-1]; //img_input[1];
+                  ss << '|';
+                  ss << reality[r][c-2]; //img_input[1];
+                  ss << '|';
+                  */
+              prg *= prime[4];
+              prg *= prime[17+  reality[r][c-1]]; //img_input[1];
+              prg *= prime[5];
+              prg *= prime[18+  reality[r][c-2]]; //img_input[1];
+
             }
           else if ( c >0 )
             {
-              ss << reality[r][c-1]; //img_input[1];
-              ss << '|';
+              /*
+                  ss << reality[r][c-1]; //img_input[1];
+                  ss << '|';
+                  */
+              prg *= prime[6];
+              prg *= prime[19+  reality[r][c-1]]; //img_input[1];
             }
 
           if ( c<m_w-3 )
             {
-              ss << reality[r][c+1]; //img_input[1];
-              ss << '|';
-              ss << reality[r][c+2]; //img_input[1];
-              ss << '|';
-              ss << reality[r][c+3]; //img_input[1];
-              ss << '|';
+              /*
+                  ss << reality[r][c+1]; //img_input[1];
+                  ss << '|';
+                  ss << reality[r][c+2]; //img_input[1];
+                  ss << '|';
+                  ss << reality[r][c+3]; //img_input[1];
+                  ss << '|';
+                  */
+              prg *= prime[7];
+              prg *= prime[20+  reality[r][c+1]]; //img_input[1];
+              prg *= prime[8];
+              prg *= prime[21+  reality[r][c+2]]; //img_input[1];
+              prg *= prime[9];
+              prg *= prime[22+  reality[r][c+3]]; //img_input[1];
+
+
             }
           else if ( c<m_w-2 )
             {
-              ss << reality[r][c+1]; //img_input[1];
-              ss << '|';
-              ss << reality[r][c+2]; //img_input[1];
-              ss << '|';
+              /*
+                  ss << reality[r][c+1]; //img_input[1];
+                  ss << '|';
+                  ss << reality[r][c+2]; //img_input[1];
+                  ss << '|';
+                  */
+              prg *= prime[10];
+              prg *= prime[23+  reality[r][c+1]]; //img_input[1];
+              prg *= prime[11];
+              prg *= prime[24+  reality[r][c+2]]; //img_input[1];
             }
           else if ( c <m_w-1 )
             {
-              ss << reality[r][c+1]; //img_input[1];
-              ss << '|';
+              /*
+              	      ss << reality[r][c+1]; //img_input[1];
+                            ss << '|';
+                            */
+              prg *= prime[12];
+              prg *= prime[25+  reality[r][c+1]]; //img_input[1];
             }
 
 
@@ -426,7 +472,7 @@ int SamuBrain::pred ( MORGAN morgan, char **reality, char **predictions, int isL
 
           */
 
-          std::string prg = ss.str();
+          //std::string prg = ss.str();
 
           // with NNs
           //SPOTriplet response = samuQl[r][c] ( lattice[r][c], prg, img_input );
@@ -434,6 +480,12 @@ int SamuBrain::pred ( MORGAN morgan, char **reality, char **predictions, int isL
 
           //  prev[r][c] = samuQl[r][c].action();// mintha a samuQl hívása után a predikciót mentettem volna el (B)
           //predictions[r][c] =  prev[r][c];
+
+
+          qDebug() << "   PPP:"
+                   << m_internal_clock
+                   << prg << "%";
+
 
           SPOTriplet response = samuQl[r][c] ( reality[r][c], prg, isLearning == 0 );
 
