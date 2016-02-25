@@ -120,9 +120,9 @@ class MentalProcessingUnit
 
 
 public:
-  
-  int sum, vsum;
-  
+
+    int sum, vsum;
+
     MentalProcessingUnit ( int w = 30, int h = 20 );
     ~MentalProcessingUnit();
 
@@ -169,14 +169,14 @@ class SamuBrain
     MORGAN newMPU ();
     int pred ( char **reality, char **predictions, int, int & );
     int pred ( MORGAN, char **reality, char **predictions, int, int & );
-    void apred ( int r, int c, char **reality, char **predictions, int isLearning);
+    void apred ( int r, int c, char **reality, char **predictions, int isLearning );
     void init_MPUs ( bool ex );
     std::string get_foobar ( MORGAN ) const;
 
     char *** fp;
     char *** fr;
 
-    
+
     SamuBrain ( const SamuBrain & );
     SamuBrain & operator= ( const SamuBrain & );
 
