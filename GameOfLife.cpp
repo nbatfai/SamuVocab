@@ -393,6 +393,7 @@ void GameOfLife::development()
   std::vector<std::string> hello =
   {
     // Rebecca Sitton's word list of 1200 high frequency words
+    // http://www.glassboroschools.us/cms/lib010/NJ01000249/Centricity/Domain/16/1200wordlisthigh%20frequency.pdf
     "the",
     "of",
     "and",
