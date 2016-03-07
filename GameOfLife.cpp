@@ -394,6 +394,7 @@ void GameOfLife::development()
   {
     // Rebecca Sitton's word list of 1200 high frequency words
     // http://www.glassboroschools.us/cms/lib010/NJ01000249/Centricity/Domain/16/1200wordlisthigh%20frequency.pdf
+    // http://www.schools.utah.gov/CURR/langartelem/Core/Literacy/1200Words.aspx
     "the",
     "of",
     "and",
